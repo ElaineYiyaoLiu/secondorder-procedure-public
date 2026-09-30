@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+artifacts/
+.env*
+!.env.example
+.codex/
+

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "name": "Anderson v. Meridian",
+  "jurisdiction": "U.S. federal civil",
+  "caseType": "Commercial contract · discovery",
+  "synthetic": true,
+  "events": [
+    {
+      "id": "evt-01",
+      "day": 0,
+      "type": "pleading",
+      "actor": "Plaintiff",
+      "title": "Complaint filed",
+      "plaintiffCost": 4800,
+      "defenseCost": 0,
+      "hours": 24,
+      "information": 0.08,
+      "facts": [
+        "Delivery obligations and alleged breach identified."
+      ],
+      "source": "SYN-001 · Synthetic complaint"
+    },
+    {
+      "id": "evt-02",
+      "day": 28,
+      "type": "pleading",
+      "actor": "Defense",
+      "title": "Answer & initial disclosures",
+      "plaintiffCost": 3600,
+      "defenseCost": 9000,
+      "hours": 62,
+      "information": 0.1,
+      "facts": [
+        "Contract formation admitted. Performance and notice remain disputed."
+      ],
+      "source": "SYN-002 · Synthetic answer"
+    },
+    {
+      "id": "evt-03",
+      "day": 54,
+      "type": "discovery",
+      "actor": "Plaintiff",
+      "title": "First document requests",
+      "plaintiffCost": 6000,
+      "defenseCost": 8000,
+      "hours": 74,
+      "information": 0.06,
+      "facts": [
+        "Custodians and document categories mapped."
+      ],
+      "source": "SYN-003 · Synthetic requests"
+    },
+    {
+      "id": "evt-04",
+      "day": 86,
+      "type": "production",
+      "actor": "Defense",
+      "title": "Document production",
+      "plaintiffCost": 11000,
+      "defenseCost": 26000,
+      "hours": 188,
+      "information": 0.23,
+      "facts": [
+        "Internal delivery logs contradict the initial schedule.",
+        "Notice email exists; receipt remains disputed."
+      ],
+      "source": "SYN-004 · Synthetic production log"
+    },
+    {
+      "id": "evt-05",
+      "day": 118,
+      "type": "deposition",
+      "actor": "Plaintiff",
+      "title": "Operations manager deposition",
+      "plaintiffCost": 12000,
+      "defenseCost": 14000,
+      "hours": 142,
+      "information": 0.12,
+      "facts": [
+        "Witness confirms a revised delivery schedule.",
+        "Approval authority remains unclear."
+      ],
+      "source": "SYN-005 · Synthetic transcript"
+    },
+    {
+      "id": "evt-06",
+      "day": 143,
+      "type": "supplemental",
+      "actor": "Defense",
+      "title": "Supplemental production",
+      "plaintiffCost": 6000,
+      "defenseCost": 18000,
+      "hours": 194,
+      "information": 0.05,
+      "facts": [
+        "Three additional emails support the revised schedule.",
+        "No new evidence of approval authority."
+      ],
+      "source": "SYN-006 · Synthetic supplemental log"
+    }
+  ]
+}
