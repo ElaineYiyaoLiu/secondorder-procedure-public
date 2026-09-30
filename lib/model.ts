@@ -65,4 +65,3 @@ export function parseCase(input: unknown): CaseData {
  if(c.events.reduce((s,e)=>s+e.information,0)>1.000001)throw new Error('Cumulative information must not exceed 1.');
  return {schemaVersion:1,name:c.name,jurisdiction:c.jurisdiction,caseType:c.caseType,synthetic:c.synthetic,events:c.events.map(e=>({...e}))};
 }
-
