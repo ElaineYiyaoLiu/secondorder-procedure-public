@@ -1,6 +1,6 @@
 This is SecondOrder Procedure, a bilingual workspace for replaying civil discovery records and comparing the order of procedural actions.
 
-Current release: **v0.2**.
+Current release: **v0.3**.
 
 Choose a public case, choose a cutoff, and click **Run model**. The engine calculates two candidate sequences, their information/cost/duration differences, and a frontier from 41 paths. Changing the case, cutoff, sequence or tolerance marks the previous run stale. Snapshot exports include only events through the selected cutoff and the current run.
 
@@ -14,7 +14,7 @@ These are selected historical episodes, reconstructed retrospectively from opini
 
 ## Model
 
-`nilpotent-step2-v0.2` uses four action counts and six signed pairwise areas. Composition follows `(x,z) · (y,w) = (x+y, z+w+½ x∧y)`. Pairwise commutators are central and triple brackets vanish. The engine evaluates the resulting coordinates with explicit scenario coefficients and a saturating information link. It is an executable mathematical scenario model, not a trained predictor or an established causal description of litigation.
+`nilpotent-step2-v0.3` uses four action counts and six signed pairwise areas. Composition follows `(x,z) · (y,w) = (x+y, z+w+½ x∧y)`. Pairwise commutators are central and triple brackets vanish. The engine evaluates the resulting coordinates with explicit scenario coefficients and a saturating information link. It is an executable mathematical scenario model, not a trained predictor or an established causal description of litigation.
 
 All continuation costs, durations, and order coefficients are authored assumptions. There are no learned transition probabilities or calibrated forecast intervals. See [MODEL.md](MODEL.md) for coefficients and limitations. This workspace does not provide legal recommendations.
 
@@ -34,7 +34,7 @@ Next.js exports a static site to `out/`. JSON imports stay in browser memory; th
 
 ## Publishing
 
-`secondorder-procedure-private / v0.2 → secondorder-procedure-public / main → Vercel Production`
+`secondorder-procedure-private / v0.3 → secondorder-procedure-public / main → Vercel Production`
 
 Earlier branches are retained. Public has only main. The existing Procedure domain and the embedding at secondorder.tools/procedure serve this public project.
 
@@ -43,3 +43,5 @@ Earlier branches are retained. Public has only main. The existing Procedure doma
 这是 SecondOrder Procedure，一个用公开民事诉讼记录展示程序顺序效应的中英文工作台。选择案件和截止点，点击“运行模型”，可以查看两条程序路径的差异及 41 条候选路径的前沿。
 
 三个真实案件的事实与日期都有来源。事件是根据判决回溯整理的选段，并非完整案卷或历史时点预测。信息评分及续行费用、时长和顺序系数属于演示假设，未披露的历史费用与工时显示为未知。模型现在可以实际计算二阶幂零路径表示，但尚未经过真实案件训练或校准。
+
+Start by selecting a case and cutoff, then edit paths A and B. The Run model button sits below both path editors. Results appear after running; changing inputs clears them until the next run.
