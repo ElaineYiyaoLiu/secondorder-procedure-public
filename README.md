@@ -1,12 +1,26 @@
-# SecondOrder Procedure
+This is SecondOrder Procedure, a bilingual workspace for replaying civil discovery records and comparing the order of procedural actions.
 
-This is a bilingual research prototype for exploring U.S. federal civil discovery. It compares how the order of procedural steps changes information, cost, and duration.
+Current release: **v0.2**.
 
-The current application version is **v0.1**. Its navy wordmark, serif explanations, light workspace, and language controls follow the SecondOrder brand used by Markets and Scenario.
+Choose a public case, choose a cutoff, and click **Run model**. The engine calculates two candidate sequences, their information/cost/duration differences, and a frontier from 41 paths. Changing the case, cutoff, sequence or tolerance marks the previous run stale. Snapshot exports include only events through the selected cutoff and the current run.
+
+## Public cases
+
+- Zubulake v. UBS Warburg: email requests, retrieval agreement, retention-policy deposition and the five-tape sampling order. Source: [217 F.R.D. 309 (May 13, 2003)](https://openjurist.org/217/frd/309/zubulake-v-ubs-warburg-llc-8753319).
+- Oxbow Carbon v. Union Pacific: sampling, a joint report, a second hearing and the production ruling. Source: [ECF 127 (September 11, 2017)](https://law.justia.com/cases/federal/district-courts/district-of-columbia/dcdce/1:2011cv01049/148519/127/).
+- Victor Stanley v. Creative Pipe: early discovery, production orders, evidentiary hearing and sanctions/recommendation. Source: [269 F.R.D. 497 (September 9, 2010)](https://openjurist.org/269/frd/497/victor-stanley-inc-v-creative-pipe-inc-8776470).
+
+These are selected historical episodes, reconstructed retrospectively from opinions. Each event links to its source, identifies the document publication date, and carries an authored information increment. They are not full dockets, contemporaneous forecasts, or training cases. The Oxbow sample cost of $57,197.95 is a reported partial expense; missing costs and hours remain null. Public-case charts use elapsed days rather than implying a complete cost history. The fictional Anderson v. Meridian fixture remains available separately.
+
+## Model
+
+`nilpotent-step2-v0.2` uses four action counts and six signed pairwise areas. Composition follows `(x,z) · (y,w) = (x+y, z+w+½ x∧y)`. Pairwise commutators are central and triple brackets vanish. The engine evaluates the resulting coordinates with explicit scenario coefficients and a saturating information link. It is an executable mathematical scenario model, not a trained predictor or an established causal description of litigation.
+
+All continuation costs, durations, and order coefficients are authored assumptions. There are no learned transition probabilities or calibrated forecast intervals. See [MODEL.md](MODEL.md) for coefficients and limitations. This workspace does not provide legal recommendations.
 
 ## Run
 
-Requires Node 22.13 or later.
+Node 22.13 or later:
 
 ```sh
 npm ci
@@ -16,46 +30,16 @@ npm run typecheck
 npm run build
 ```
 
-The build exports a static site to `out/`. In containers that restrict process memory statistics, run `NODE_OPTIONS=--require=./build-memory-shim.cjs npm run build -- --webpack`. Normal hosts do not need the shim.
+Next.js exports a static site to `out/`. JSON imports stay in browser memory; there is no backend, API key, LLM or automated document extraction. Imports support 1–200 chronological events, with null for unreported costs and hours. The legacy numeric template remains compatible.
 
-## Explore
+## Publishing
 
-- **Live:** information and burden at the selected date, possible next steps, and a configurable continuation horizon.
-- **Path:** the event record, sources, information increments, and costs for each party.
-- **Compare:** editable sequences and the effect of changing their order.
-- **Frontier:** 41 candidate sequences, an information tolerance, and comparison with a baseline.
-- **Method:** definitions, coefficients, assumptions, and research milestones.
+`secondorder-procedure-private / v0.2 → secondorder-procedure-public / main → Vercel Production`
 
-The review demo compares a frozen forecast with a separate completed synthetic record. It does not change the active case.
-
-Import a local JSON record of up to 1 MB and 200 chronological events. Export a template or a snapshot containing only events through the selected cutoff. Imports stay in browser memory and are lost on refresh. There is no backend, LLM, legal database, or API key. The interface supports English and Chinese; imported records retain their source language.
-
-## Model limits
-
-The Anderson v. Meridian case and all its values are fictional. Projections use fixed demonstration rules in `lib/model.ts`, not a trained or calibrated model. Next-state percentages are preset weights; cost ranges are scenario ranges, not statistical intervals. Information is a proxy for record development, not adjudicative quality. The least-cost path is a minimum within the enumerated candidates. This prototype does not provide legal recommendations.
-
-The model adjusts marginal gain for remaining information, applies discovery/deposition ordering factors, and reduces gains for repeated actions. Method shows these rules. The original research blueprint still needs to be checked before research use.
-
-## Versions and publishing
-
-Formal development uses numbered branches in the private source repository. The latest approved release is mirrored to the public repository's sole `main` branch, which is the source for Vercel production:
-
-`secondorder-procedure-private / v0.X → secondorder-procedure-public / main → Vercel Production`
-
-Before publishing, run the tests, type check, and build; check the displayed version; and review tracked files for secrets and internal configuration. Verify the deployed English and Chinese interface after publishing. Repository naming and deployment setup are tracked separately from the application version.
-
-## Research next steps
-
-1. Define information and quality rubrics that independent reviewers can annotate from cited sources.
-2. Extract events from documents with human confirmation.
-3. Train and calibrate transition, cost, and duration models using temporal splits of completed cases.
-4. Evaluate frozen forecasts and examine counterfactual assumptions separately.
-5. Compare action-count, pairwise-order, and higher-order models with independent evaluation and repeated runs.
+Earlier branches are retained. Public has only main. The existing Procedure domain and the embedding at secondorder.tools/procedure serve this public project.
 
 ## 中文
 
-这是一个面向美国联邦民事证据开示的双语研究原型，用来比较程序步骤的顺序如何影响信息、费用和时长。
+这是 SecondOrder Procedure，一个用公开民事诉讼记录展示程序顺序效应的中英文工作台。选择案件和截止点，点击“运行模型”，可以查看两条程序路径的差异及 41 条候选路径的前沿。
 
-当前应用版本为 **v0.1**。可以查看案件记录、编辑并比较路径，或在设定的信息容差内寻找费用较低的候选方案。导入的 JSON 只在浏览器内处理，刷新后不保留；可以导出模板或截至所选日期的时间切片。
-
-演示案件与数值均为虚构，推演使用固定规则，尚未经过训练或校准。信息指标不代表裁判质量，最低费用仅限于枚举路径。本原型不提供法律行动建议。具体规则与研究计划见 Method 页面。
+三个真实案件的事实与日期都有来源。事件是根据判决回溯整理的选段，并非完整案卷或历史时点预测。信息评分及续行费用、时长和顺序系数属于演示假设，未披露的历史费用与工时显示为未知。模型现在可以实际计算二阶幂零路径表示，但尚未经过真实案件训练或校准。

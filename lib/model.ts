@@ -1,6 +1,6 @@
 export type Action = 'discovery' | 'deposition' | 'motion' | 'expert';
-export type Event = { id: string; day: number; type: string; actor: string; title: string; plaintiffCost: number; defenseCost: number; hours: number; information: number; facts: string[]; source: string };
-export type CaseData = { schemaVersion: 1; name: string; jurisdiction: string; caseType: string; synthetic: boolean; events: Event[] };
+export type Event = { id: string; day: number; type: string; actor: string; title: string; plaintiffCost: number | null; defenseCost: number | null; hours: number | null; date?: string; sourceUrl?: string; sourceDate?: string; titleZh?: string; factsZh?: string[]; information: number; facts: string[]; source: string };
+export type CaseData = { schemaVersion: 1; name: string; jurisdiction: string; caseType: string; synthetic: boolean; id?: string; docket?: string; summary?: string; summaryZh?: string; publicRecord?: boolean; events: Event[] };
 export const actions: Record<Action, { label: string; zh: string; cost: number; duration: number; gain: number }> = {
  discovery:{label:'Targeted discovery',zh:'定向证据开示',cost:38000,duration:42,gain:.18},
  deposition:{label:'Second deposition',zh:'第二次证言录取',cost:27000,duration:30,gain:.11},
@@ -20,25 +20,43 @@ export const demo: CaseData = {
 };
 export function stateAt(data: CaseData, index: number) {
  const events=data.events.slice(0,Math.max(0,Math.min(index,data.events.length-1))+1);
- return {day:events.at(-1)!.day,events,information:Math.min(.99,events.reduce((s,e)=>s+e.information,0)),burden:events.reduce((s,e)=>s+e.plaintiffCost+e.defenseCost,0),plaintiff:events.reduce((s,e)=>s+e.plaintiffCost,0),defense:events.reduce((s,e)=>s+e.defenseCost,0),hours:events.reduce((s,e)=>s+e.hours,0)};
+ return {day:events.at(-1)!.day,events,information:Math.min(.99,events.reduce((s,e)=>s+e.information,0)),burden:events.reduce((s,e)=>s+(e.plaintiffCost??0)+(e.defenseCost??0),0),plaintiff:events.reduce((s,e)=>s+(e.plaintiffCost??0),0),defense:events.reduce((s,e)=>s+(e.defenseCost??0),0),unknownCosts:events.filter(e=>e.plaintiffCost===null||e.defenseCost===null).length,unknownHours:events.filter(e=>e.hours===null).length,hours:events.reduce((s,e)=>s+(e.hours??0),0)};
 }
 export type Projection = { path: Action[]; gain: number; quality: number; cost: number; days: number; plaintiff: number; defense: number; low: number; high: number };
-// Explicit demonstration rules, not fitted coefficients or causal estimates.
-// Discovery before deposition improves usable information and reduces rework.
+export const MODEL_ID = 'nilpotent-step2-v0.2';
+export const actionIds: Action[] = ['discovery','deposition','motion','expert'];
+export const pairs = actionIds.flatMap((a,i)=>actionIds.slice(i+1).map(b=>[a,b] as [Action,Action]));
+export type Signature = {counts: number[]; areas: number[]};
+export function compose(left:Signature,right:Signature):Signature {
+ if(left.counts.length!==4||right.counts.length!==4||left.areas.length!==6||right.areas.length!==6||[...left.counts,...right.counts,...left.areas,...right.areas].some(x=>!Number.isFinite(x)))throw Error('Invalid step-2 state.');
+ return {counts:left.counts.map((x,i)=>x+right.counts[i]),areas:pairs.map(([a,b],k)=>{
+  const i=actionIds.indexOf(a),j=actionIds.indexOf(b);
+  return left.areas[k]+right.areas[k]+.5*(left.counts[i]*right.counts[j]-left.counts[j]*right.counts[i]);
+ })};
+}
+export function pathSignature(path:Action[]):Signature {
+ if(!Array.isArray(path)||path.length>20||Array.from(path).some(id=>!actionIds.includes(id)))throw Error('Use at most 20 valid actions.');
+ return path.reduce((state,id)=>compose(state,{counts:actionIds.map(a=>Number(a===id)),areas:Array(6).fill(0)}),{counts:Array(4).fill(0),areas:Array(6).fill(0)});
+}
+// Authored scenario coefficients, never inferred from public case outcomes.
+// Central coordinates retain pairwise order. Triple Lie brackets are zero.
+export const orderCoefficients = {gain:[.16,0,0,0,0,0],cost:[-8500,0,0,0,0,0],days:[-6,0,0,0,0,0]};
 export function project(information: number, path: Action[]): Projection {
- let current=information,cost=0,days=0,plaintiff=0,defense=0;
- const seen: Action[]=[];
- for(const action of path){
-  let {gain,cost:stepCost,duration}=actions[action];
-  gain*= Math.max(.12,1-current)/.36;
-  if(action==='deposition'&&seen.includes('discovery')) {gain*=1.5;stepCost*=.85;}
-  if(action==='discovery'&&seen.includes('deposition')) {gain*=.85;stepCost*=1.12;duration*=1.15;}
-  if(seen.includes(action)){gain*=.4;stepCost*=.9;}
-  const split=action==='discovery'?.24:action==='deposition'?.38:.5;
-  cost+=stepCost;days+=duration;plaintiff+=stepCost*split;defense+=stepCost*(1-split);
-  current+=Math.min(1-current,gain);seen.push(action);
- }
- return {path:[...path],gain:current-information,quality:current,cost:Math.round(cost),days:Math.round(days),plaintiff:Math.round(plaintiff),defense:Math.round(defense),low:Math.round(cost*.65),high:Math.round(cost*1.6)};
+ if(!Number.isFinite(information)||information<0||information>1)throw Error('Information must be between 0 and 1.');
+ const signature=pathSignature(path);
+ const dot=(xs:number[],ys:number[])=>xs.reduce((s,x,i)=>s+x*ys[i],0);
+ const intensity=Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].gain/.36))+dot(signature.areas,orderCoefficients.gain));
+ const quality=information+(1-information)*(1-Math.exp(-intensity));
+ const cost=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].cost))+dot(signature.areas,orderCoefficients.cost)));
+ const days=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].duration))+dot(signature.areas,orderCoefficients.days)));
+ const plaintiffShare=cost?dot(signature.counts,actionIds.map(a=>actions[a].cost*(a==='discovery'?.24:a==='deposition'?.38:.5)))/Math.max(1,dot(signature.counts,actionIds.map(a=>actions[a].cost))):0;
+ const plaintiff=Math.round(cost*plaintiffShare),defense=cost-plaintiff;
+ return {path:[...path],gain:quality-information,quality,cost,days,plaintiff,defense,low:Math.round(cost*.65),high:Math.round(cost*1.6)};
+}
+export function runModel(data:CaseData,index:number,tolerance=.02,pathA:Action[]=['discovery','deposition'],pathB:Action[]=['deposition','discovery']) {
+ if(!Number.isInteger(index)||index<0||index>=data.events.length||!Number.isFinite(tolerance)||tolerance<0||tolerance>.1)throw Error('Invalid cutoff or tolerance.');
+ const state=stateAt(data,index),a=project(state.information,pathA),b=project(state.information,pathB),candidates=enumerate(state.information);
+ return {model:MODEL_ID,caseName:data.name,asOfDay:state.day,eventCount:state.events.length,information:state.information,signatureA:pathSignature(pathA),signatureB:pathSignature(pathB),a,b,orderGap:{gain:a.gain-b.gain,cost:a.cost-b.cost,days:a.days-b.days},candidateCount:candidates.length,frontier:frontier(candidates),comparison:comparable(state.information,tolerance),tolerance};
 }
 export function enumerate(information:number):Projection[]{
  const ids=Object.keys(actions) as Action[]; const paths: Action[][]=[[]];
@@ -56,12 +74,18 @@ export function parseCase(input: unknown): CaseData {
  if(!input||typeof input!=='object')throw new Error('Expected a case JSON object.');
  const c=input as CaseData;
  if(c.schemaVersion!==1||typeof c.name!=='string'||!c.name.trim()||c.name.length>160||typeof c.jurisdiction!=='string'||typeof c.caseType!=='string'||typeof c.synthetic!=='boolean'||!Array.isArray(c.events)||!c.events.length||c.events.length>200)throw new Error('Invalid case metadata or events (1–200 required).');
+ if(['id','docket','summary','summaryZh'].some(k=>c[k as keyof CaseData]!==undefined&&typeof c[k as keyof CaseData]!=='string')||(c.publicRecord!==undefined&&typeof c.publicRecord!=='boolean'))throw Error('Invalid optional metadata.');
  const ids=new Set<string>();let last=-1;
  for(const e of c.events){
   if(!e||['id','type','actor','title','source'].some(k=>typeof e[k as keyof Event]!=='string')||!e.id||ids.has(e.id)||!Array.isArray(e.facts)||e.facts.some(f=>typeof f!=='string')||e.facts.length>100)throw new Error('Invalid event fields or duplicate event ID.');
-  if(['day','plaintiffCost','defenseCost','hours','information'].some(k=>!Number.isFinite(e[k as keyof Event])||Number(e[k as keyof Event])<0)||e.information>1||!Number.isInteger(e.day)||e.day<last)throw new Error('Events must be chronological with finite, nonnegative values and information between 0 and 1.');
+  if(['day','information'].some(k=>!Number.isFinite(e[k as keyof Event])||Number(e[k as keyof Event])<0)||e.information>1||!Number.isInteger(e.day)||e.day<last)throw new Error('Events must be chronological with finite, nonnegative values and information between 0 and 1.');
+  if(['plaintiffCost','defenseCost','hours'].some(k=>{const v=e[k as keyof Event];return v!==null&&(!Number.isFinite(v)||Number(v)<0);}))throw Error('Costs and hours must be nonnegative numbers or null.');
+  if(['date','sourceDate','sourceUrl'].some(k=>e[k as keyof Event]!==undefined&&typeof e[k as keyof Event]!=='string'))throw Error('Invalid source metadata.');
+  if((e.titleZh!==undefined&&typeof e.titleZh!=='string')||(e.factsZh!==undefined&&(!Array.isArray(e.factsZh)||e.factsZh.some(f=>typeof f!=='string'))))throw Error('Invalid translated fields.');
+  for(const date of [e.date,e.sourceDate])if(date&&(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date))throw Error('Invalid source or event date.');
+  if(e.sourceUrl&&(typeof e.sourceUrl!=='string'||!/^https:\/\//.test(e.sourceUrl)))throw Error('Use HTTPS source URLs.');
   ids.add(e.id);last=e.day;
  }
  if(c.events.reduce((s,e)=>s+e.information,0)>1.000001)throw new Error('Cumulative information must not exceed 1.');
- return {schemaVersion:1,name:c.name,jurisdiction:c.jurisdiction,caseType:c.caseType,synthetic:c.synthetic,events:c.events.map(e=>({...e}))};
+ return {...c,events:c.events.map(e=>({...e,facts:[...e.facts],...(e.factsZh?{factsZh:[...e.factsZh]}:{})}))};
 }
