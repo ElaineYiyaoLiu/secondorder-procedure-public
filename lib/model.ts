@@ -23,7 +23,10 @@ export function stateAt(data: CaseData, index: number) {
  return {day:events.at(-1)!.day,events,information:Math.min(.99,events.reduce((s,e)=>s+e.information,0)),burden:events.reduce((s,e)=>s+(e.plaintiffCost??0)+(e.defenseCost??0),0),plaintiff:events.reduce((s,e)=>s+(e.plaintiffCost??0),0),defense:events.reduce((s,e)=>s+(e.defenseCost??0),0),unknownCosts:events.filter(e=>e.plaintiffCost===null||e.defenseCost===null).length,unknownHours:events.filter(e=>e.hours===null).length,hours:events.reduce((s,e)=>s+(e.hours??0),0)};
 }
 export type Projection = { path: Action[]; gain: number; quality: number; cost: number; days: number; plaintiff: number; defense: number; low: number; high: number };
-export const MODEL_ID = 'nilpotent-step2-v0.2';
+export type ModelKind = 'heisenberg' | 'free-step2';
+export const modelIds:Record<ModelKind,string> = {heisenberg:'heisenberg-h5-nilpotent-v0.4','free-step2':'free-step2-nilpotent-v0.4'};
+export const MODEL_ID = modelIds.heisenberg;
+export const DEFAULT_MODEL:ModelKind = 'heisenberg';
 export const actionIds: Action[] = ['discovery','deposition','motion','expert'];
 export const pairs = actionIds.flatMap((a,i)=>actionIds.slice(i+1).map(b=>[a,b] as [Action,Action]));
 export type Signature = {counts: number[]; areas: number[]};
@@ -38,35 +41,64 @@ export function pathSignature(path:Action[]):Signature {
  if(!Array.isArray(path)||path.length>20||Array.from(path).some(id=>!actionIds.includes(id)))throw Error('Use at most 20 valid actions.');
  return path.reduce((state,id)=>compose(state,{counts:actionIds.map(a=>Number(a===id)),areas:Array(6).fill(0)}),{counts:Array(4).fill(0),areas:Array(6).fill(0)});
 }
+// Coordinates follow actionIds: X1, Y1, X2, Y2. One shared center Z.
+export type HeisenbergState = {horizontal:number[]; central:number};
+const validHorizontal=(v:number[])=>Array.isArray(v)&&v.length===4&&Array.from(v).every(Number.isFinite);
+export function symplectic(left:number[],right:number[]):number {
+ if(!validHorizontal(left)||!validHorizontal(right))throw Error('Expected four finite horizontal coordinates.');
+ return left[0]*right[1]-left[1]*right[0]+left[2]*right[3]-left[3]*right[2];
+}
+export function composeHeisenberg(left:HeisenbergState,right:HeisenbergState):HeisenbergState {
+ if(!Number.isFinite(left.central)||!Number.isFinite(right.central))throw Error('Expected a finite central coordinate.');
+ const area=.5*symplectic(left.horizontal,right.horizontal);
+ return {horizontal:left.horizontal.map((x,i)=>x+right.horizontal[i]),central:left.central+right.central+area};
+}
+export function heisenbergSignature(path:Action[]):HeisenbergState {
+ pathSignature(path); // Reuse action/count limits before folding the H5 group law.
+ return path.reduce((s,id)=>composeHeisenberg(s,{horizontal:actionIds.map(a=>Number(a===id)),central:0}),{horizontal:[0,0,0,0],central:0});
+}
+export function quotientToHeisenberg(s:Signature):HeisenbergState {
+ // Validate the free state, then identify [X1,Y1] and [X2,Y2] with the same Z.
+ compose(s,{counts:[0,0,0,0],areas:[0,0,0,0,0,0]});
+ return {horizontal:[...s.counts],central:s.areas[0]+s.areas[5]};
+}
+// A formal signed loop demonstrates the algebra. It does not undo real procedure.
+export function heisenbergCommutator(left:HeisenbergState,right:HeisenbergState):HeisenbergState {
+ const inverse=(s:HeisenbergState)=>({horizontal:s.horizontal.map(x=>-x),central:-s.central});
+ return composeHeisenberg(composeHeisenberg(composeHeisenberg(left,right),inverse(left)),inverse(right));
+}
+export const heisenbergCoefficients = {gain:.16,cost:-8500,days:-6};
 // Authored scenario coefficients, never inferred from public case outcomes.
 // Central coordinates retain pairwise order. Triple Lie brackets are zero.
 export const orderCoefficients = {gain:[.16,0,0,0,0,0],cost:[-8500,0,0,0,0,0],days:[-6,0,0,0,0,0]};
-export function project(information: number, path: Action[]): Projection {
+export function project(information: number, path: Action[],kind:ModelKind=DEFAULT_MODEL): Projection {
+ if(!Object.hasOwn(modelIds,kind))throw Error('Invalid model kind.');
  if(!Number.isFinite(information)||information<0||information>1)throw Error('Information must be between 0 and 1.');
- const signature=pathSignature(path);
+ const signature=pathSignature(path),h=heisenbergSignature(path);
  const dot=(xs:number[],ys:number[])=>xs.reduce((s,x,i)=>s+x*ys[i],0);
- const intensity=Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].gain/.36))+dot(signature.areas,orderCoefficients.gain));
+ const order=(metric:keyof typeof orderCoefficients)=>kind==='heisenberg'?h.central*heisenbergCoefficients[metric]:dot(signature.areas,orderCoefficients[metric]);
+ const intensity=Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].gain/.36))+order('gain'));
  const quality=information+(1-information)*(1-Math.exp(-intensity));
- const cost=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].cost))+dot(signature.areas,orderCoefficients.cost)));
- const days=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].duration))+dot(signature.areas,orderCoefficients.days)));
+ const cost=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].cost))+order('cost')));
+ const days=Math.round(Math.max(0,dot(signature.counts,actionIds.map(a=>actions[a].duration))+order('days')));
  const plaintiffShare=cost?dot(signature.counts,actionIds.map(a=>actions[a].cost*(a==='discovery'?.24:a==='deposition'?.38:.5)))/Math.max(1,dot(signature.counts,actionIds.map(a=>actions[a].cost))):0;
  const plaintiff=Math.round(cost*plaintiffShare),defense=cost-plaintiff;
  return {path:[...path],gain:quality-information,quality,cost,days,plaintiff,defense,low:Math.round(cost*.65),high:Math.round(cost*1.6)};
 }
-export function runModel(data:CaseData,index:number,tolerance=.02,pathA:Action[]=['discovery','deposition'],pathB:Action[]=['deposition','discovery']) {
+export function runModel(data:CaseData,index:number,tolerance=.02,pathA:Action[]=['discovery','deposition'],pathB:Action[]=['deposition','discovery'],kind:ModelKind=DEFAULT_MODEL) {
  if(!Number.isInteger(index)||index<0||index>=data.events.length||!Number.isFinite(tolerance)||tolerance<0||tolerance>.1)throw Error('Invalid cutoff or tolerance.');
- const state=stateAt(data,index),a=project(state.information,pathA),b=project(state.information,pathB),candidates=enumerate(state.information);
- return {model:MODEL_ID,caseName:data.name,asOfDay:state.day,eventCount:state.events.length,information:state.information,signatureA:pathSignature(pathA),signatureB:pathSignature(pathB),a,b,orderGap:{gain:a.gain-b.gain,cost:a.cost-b.cost,days:a.days-b.days},candidateCount:candidates.length,frontier:frontier(candidates),comparison:comparable(state.information,tolerance),tolerance};
+ const state=stateAt(data,index),a=project(state.information,pathA,kind),b=project(state.information,pathB,kind),candidates=enumerate(state.information,kind);
+ return {model:modelIds[kind],kind,heisenbergA:heisenbergSignature(pathA),heisenbergB:heisenbergSignature(pathB),caseName:data.name,asOfDay:state.day,eventCount:state.events.length,information:state.information,signatureA:pathSignature(pathA),signatureB:pathSignature(pathB),a,b,orderGap:{gain:a.gain-b.gain,cost:a.cost-b.cost,days:a.days-b.days},candidateCount:candidates.length,frontier:frontier(candidates),comparison:comparable(state.information,tolerance,kind),tolerance};
 }
-export function enumerate(information:number):Projection[]{
+export function enumerate(information:number,kind:ModelKind=DEFAULT_MODEL):Projection[]{
  const ids=Object.keys(actions) as Action[]; const paths: Action[][]=[[]];
  const walk=(prefix:Action[])=>{if(prefix.length===3)return;for(const id of ids){if(!prefix.includes(id)){const next=[...prefix,id];paths.push(next);walk(next);}}};walk([]);
- return paths.map(path=>project(information,path));
+ return paths.map(path=>project(information,path,kind));
 }
 export function frontier(candidates: Projection[]) { return candidates.filter(p=>!candidates.some(q=>q.cost<=p.cost&&q.quality>=p.quality&&(q.cost<p.cost||q.quality>p.quality))).sort((a,b)=>a.cost-b.cost); }
-export function comparable(information:number, tolerance:number) {
- const baseline=project(information,['deposition','discovery','motion']);
- const candidates=enumerate(information).filter(p=>p.quality>=baseline.quality-tolerance-1e-9);
+export function comparable(information:number, tolerance:number,kind:ModelKind=DEFAULT_MODEL) {
+ const baseline=project(information,['deposition','discovery','motion'],kind);
+ const candidates=enumerate(information,kind).filter(p=>p.quality>=baseline.quality-tolerance-1e-9);
  const best=candidates.reduce((a,b)=>b.cost<a.cost?b:a,baseline);
  return {baseline,best,gap:Math.max(0,baseline.cost-best.cost)};
 }
