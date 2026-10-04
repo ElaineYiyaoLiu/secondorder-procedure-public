@@ -22,7 +22,7 @@ export default function Page(){
  const upload=useRef<HTMLInputElement>(null);const t=(en:string,cn:string)=>zh?cn:en;
  const state=stateAt(data,index),a=project(state.information,pathA,modelKind),b=project(state.information,pathB,modelKind),all=enumerate(state.information,modelKind),edge=frontier(all),comparison=comparable(state.information,epsilon,modelKind),continuation=comparison.baseline;
  const label=(id:Action)=>zh?actions[id].zh:actions[id].label;
- useEffect(()=>{const id=window.location.hash.slice(1) as View;if(id in viewNames)setView(id);const lang=new URLSearchParams(window.location.search).get('lang');if(lang==='zh')setZh(true);else if(lang==='en')setZh(false);else try{setZh(localStorage.getItem('secondorder-site-language')==='zh');}catch{}},[]);
+ useEffect(()=>{const id=window.location.hash.slice(1) as View;if(id in viewNames)setView(id);const lang=new URLSearchParams(window.location.search).get('lang');if(lang==='zh')setZh(true);else if(lang==='en')setZh(false);},[]);
  useEffect(()=>{document.documentElement.lang=zh?'zh-CN':'en';},[zh]);
  const changeLanguage=(value:boolean)=>{setZh(value);try{localStorage.setItem('secondorder-site-language',value?'zh':'en');}catch{}};
  const navigate=(v:View)=>{setView(v);history.replaceState(null,'','#'+v);setNotice('');};
