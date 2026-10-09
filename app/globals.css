@@ -73,3 +73,8 @@ header .brand.so-brand .so-brand-copy small:empty{display:none}
 .model-summary{display:grid;gap:6px;min-width:150px}.model-summary>span{font-size:14px;font-weight:600;color:var(--ink)}.model-summary .text-button{text-align:left;padding-left:0}
 
 .reorder-path{list-style:none;margin:0;padding:0 25px}.reorder-step{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.reorder-step:last-child{border-bottom:0}.reorder-step>span{font-size:11px;color:var(--copper);font-variant-numeric:tabular-nums}.reorder-step>strong{flex:1;min-width:0;font-weight:500;font-size:14px;color:var(--blue)}.step-controls{display:flex;gap:3px}.step-controls button{display:flex;align-items:center;justify-content:center;width:32px;height:34px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--blue);cursor:pointer}.step-controls button:hover:not(:disabled){background:#eef3f7}.step-controls button:disabled{opacity:.3;cursor:default}.path-reset{margin:16px 25px 22px}.path-reset button{display:flex;align-items:center;gap:6px}.reorder-empty{margin:18px 25px;font-size:12px;color:#748b9d}@media(max-width:680px){.reorder-path{padding:0 16px}.reorder-step{gap:8px}.reorder-step>strong{font-size:12px}.step-controls button{width:34px;height:44px}.path-reset{margin:16px}}
+
+/* Keep the construction status in the title's typography and allow narrow headers to wrap. */
+header .brand.so-brand{white-space:normal;min-width:0}
+header .brand.so-brand .so-brand-copy{white-space:normal;min-width:0;line-height:1.2}
+@media(max-width:640px){header,header.topbar{height:auto;flex-wrap:wrap;gap:10px}header .brand.so-brand{width:100%;max-width:100%}}
