@@ -6,7 +6,7 @@ import {methodSections,type Block} from './method-content';
 
 // Only author-controlled formulas are rendered; no uploaded content or macros enter KaTeX.
 const renderedMath=new Map(methodSections.flatMap(s=>s.blocks.filter(b=>b.type==='math').map(b=>[b.id,katex.renderToString(b.tex,{displayMode:true,throwOnError:true,strict:'error',trust:false,output:'htmlAndMathml'})] as const)));
-const roleLabels={assumption:['Assumption','假设'],proposition:['Proposition','命题'],proof:['Proof','证明'],review:['Point for review','待审阅问题']} as const;
+const roleLabels={assumption:['Assumption','假设'],proposition:['Proposition','命题'],proof:['Proof','证明']} as const;
 
 export default function Method({zh}:{zh:boolean}) {
  const t=(en:string,cn:string)=>zh?cn:en;
@@ -14,7 +14,7 @@ export default function Method({zh}:{zh:boolean}) {
  const renderBlock=(b:Block,index:number):ReactNode=>{
   if(b.type==='math')return <figure className="review-equation" key={b.id} aria-label={t(`Equation ${b.id}`,`公式 ${b.id}`)}><div className="review-math" dangerouslySetInnerHTML={{__html:renderedMath.get(b.id)!}}/><figcaption>({b.id})</figcaption></figure>;
   if(b.type==='table')return <div className="table-scroll" key={index}><table><thead><tr>{b.headers.map((h,i)=><th scope="col" key={i}>{cell(h)}</th>)}</tr></thead><tbody>{b.rows.map((row,i)=><tr key={i}>{row.map((c,j)=><td key={j}>{cell(c)}</td>)}</tr>)}</tbody></table></div>;
-  return <div className={b.role?`review-statement review-${b.role}`:undefined} key={index}>{b.role&&<strong className="review-label">{cell(roleLabels[b.role] as [string,string])}</strong>}<p>{t(b.en,b.zh)}</p></div>;
+  return <div className={b.role?`review-statement review-${b.role}`:undefined} key={index}>{b.role&&b.role!=='review'&&<strong className="review-label">{cell(roleLabels[b.role] as [string,string])}</strong>}<p>{t(b.en,b.zh)}</p></div>;
  };
  const A=project(.38,['discovery','deposition']),B=project(.38,['deposition','discovery']);
  return <article className="method-content mathematical-review" aria-label={t('Mathematical framework','数学框架')}>

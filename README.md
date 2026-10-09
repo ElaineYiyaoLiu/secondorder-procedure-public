@@ -1,6 +1,6 @@
 This is SecondOrder Procedure, a bilingual workspace for replaying civil discovery records and comparing the order of procedural actions.
 
-Current release: **v0.9**.
+Current release: **v0.10**.
 
 Choose a public case and cutoff. Both paths start with discovery, deposition, motion and expert discovery in different orders. Use up/down buttons to reorder steps, remove individual steps, or reset a path. **Swap paths** exchanges A and B. Click **Run model** to calculate. The engine calculates two candidate sequences, their information/cost/duration differences, and a frontier from 41 paths. Changing the case, cutoff, path order, included steps or tolerance marks the previous run stale. Snapshot exports include only events through the selected cutoff and the current run.
 
@@ -14,7 +14,7 @@ These are selected historical episodes, reconstructed retrospectively from opini
 
 ## Model
 
-The default engine is `heisenberg-h5-nilpotent-v0.9`, an executable five-dimensional Heisenberg group. Four horizontal action directions share a single central term. The group is step-2 nilpotent: pairwise brackets are central and triple brackets vanish.
+The default engine is `heisenberg-h5-nilpotent-v0.10`, an executable five-dimensional Heisenberg group. Four horizontal action directions share a single central term. The group is step-2 nilpotent: pairwise brackets are central and triple brackets vanish.
 
 The workspace uses H₅. The free step-2 representation remains in the code for mathematical comparison and a full six-area audit. Method has 15 numbered sections with LaTeX formulas, proofs, the dimension and quotient arguments, exact calculations, identification conditions and questions for mathematical review. Use its print button to save a copy for review. See [MODEL.md](MODEL.md) for the technical specification.
 
@@ -36,7 +36,7 @@ Next.js exports a static site to `out/`. JSON imports stay in browser memory; th
 
 ## Publishing
 
-`secondorder-procedure-private / v0.9 → secondorder-procedure-public / main → Vercel Production`
+`secondorder-procedure-private / v0.10 → secondorder-procedure-public / main → Vercel Production`
 
 Earlier branches are retained. Public has only main. The existing Procedure domain and the embedding at secondorder.tools/procedure serve this public project.
 
