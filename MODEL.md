@@ -1,4 +1,4 @@
-# Procedure v0.9: nilpotent Heisenberg application
+# Procedure v0.1: nilpotent Heisenberg application
 
 This specifies the ordered action model, its Heisenberg group law and its scenario evaluation. Method presents the mathematical framework, full calculation workflow and empirical testing protocol in English and Chinese.
 

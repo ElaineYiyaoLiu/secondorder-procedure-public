@@ -154,9 +154,9 @@ table([['Function','函数'],['Equation / role','公式 / 作用']],[
 [['project','project'],['(9.1)–(9.4): authored scenario outputs','(9.1)–(9.4)：预设情景输出']],
 [['enumerate / frontier / comparable','enumerate / frontier / comparable'],['(11.3)–(11.4): finite search and dominance','(11.3)–(11.4)：有限搜索与支配关系']],
 [['stateAt / runModel','stateAt / runModel'],['Prefix inputs and selected-engine execution','前缀输入与所选引擎执行']]]),
-p("1. How can real procedural actions be encoded as measurable state changes, and how can their order effects be tested for a step-2 nilpotent structure?","1. 如何将真实程序动作编码为可测的状态变化，并检验其顺序效应是否满足二阶幂零结构？",'review'),
-p("2. What supports a shared center for the two action pairs and zero brackets for the other pairs? Could the order differences discarded by the five-dimensional quotient affect outcomes?","2. 什么依据支持两个动作配对共享一个中心、其余配对的括号为零？五维商舍弃的顺序差异会不会影响结果？",'review'),
-p("3. What explanatory or predictive value does the group structure add beyond a general order-interaction model? How can its contribution be separated from the preset cost, time and information coefficients?","3. 与一般的顺序交互模型相比，群结构提供了什么额外解释或预测能力？如何区分它的贡献与预设成本、时间和信息系数的作用？",'review'),
-p("4. How can adjudicative quality be measured independently and avoidable burden estimated across legally admissible, comparable paths? What changes would the current burden function and search space need?","4. 如何独立衡量裁判质量，并在合法且可比的路径中估计可避免负担？当前负担函数和搜索范围需要怎样调整？",'review')
+p("1. What mathematical conditions are needed to represent discrete, irreversible procedural actions in a Lie group? Is a fixed action encoding enough to connect the group product to actual state transitions?","1. 将离散、不可逆的程序动作表示在 Lie 群中，需要哪些数学条件？固定动作编码是否足以把群乘法与实际状态转移连接起来？",'review'),
+p("2. Is the quotient from the ten-dimensional free step-2 model to H₅ appropriate here? How can we assess whether a shared center and the chosen pairings discard too much order information?","2. 从十维自由二阶模型取商得到 H₅，在这里是否合适？怎样判断共享中心和所选配对是否舍弃了过多顺序信息？",'review'),
+p("3. Which state-level relations would test step-2 nilpotency? How can nonzero third-order brackets be distinguished from higher-order effects caused by nonlinear output functions?","3. 应检验哪些状态层面的关系，才能判断二阶幂零性？如何区分非零三阶括号与非线性输出函数造成的高阶效应？",'review'),
+p("4. With irreversible actions and legally constrained paths, how should minimum burden be defined while preserving adjudicative quality? Under what assumptions could Carnot–Carathéodory distance provide a useful bound?","4. 动作不可逆、路径受法律约束时，怎样定义保留裁判质量的最小负担？在什么假设下，Carnot–Carathéodory 距离能提供有用的界限？",'review')
 ]}
 ];
