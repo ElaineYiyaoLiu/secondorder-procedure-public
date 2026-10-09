@@ -1,2 +1,2 @@
-export const productVersion = 'v0.6';
+export const productVersion = 'v0.7';
 
