@@ -24,7 +24,7 @@ export function stateAt(data: CaseData, index: number) {
 }
 export type Projection = { path: Action[]; gain: number; quality: number; cost: number; days: number; plaintiff: number; defense: number; low: number; high: number };
 export type ModelKind = 'heisenberg' | 'free-step2';
-export const modelIds:Record<ModelKind,string> = {heisenberg:'heisenberg-h5-nilpotent-v0.4','free-step2':'free-step2-nilpotent-v0.4'};
+export const modelIds:Record<ModelKind,string> = {heisenberg:'heisenberg-h5-nilpotent-v0.5','free-step2':'free-step2-nilpotent-v0.5'};
 export const MODEL_ID = modelIds.heisenberg;
 export const DEFAULT_MODEL:ModelKind = 'heisenberg';
 export const actionIds: Action[] = ['discovery','deposition','motion','expert'];
@@ -121,3 +121,4 @@ export function parseCase(input: unknown): CaseData {
  if(c.events.reduce((s,e)=>s+e.information,0)>1.000001)throw new Error('Cumulative information must not exceed 1.');
  return {...c,events:c.events.map(e=>({...e,facts:[...e.facts],...(e.factsZh?{factsZh:[...e.factsZh]}:{})}))};
 }
+

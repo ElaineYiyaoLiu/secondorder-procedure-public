@@ -1,6 +1,6 @@
-# Procedure v0.4: nilpotent Heisenberg application
+# Procedure v0.5: nilpotent Heisenberg application
 
-This implements the algebraic proposal in Elaine Liu, *Heisenberg Structure and Procedural Waste in Adversarial Litigation*, Preliminary Research Blueprint, September 2026 (P2 Version 1). The blueprint is a research hypothesis, not evidence that real litigation follows this algebra. The original PDF is not distributed with this repository.
+This specifies the ordered action model, its Heisenberg group law and its scenario evaluation. Method presents the mathematical framework, full calculation workflow and empirical testing protocol in English and Chinese.
 
 ## Default: higher-dimensional Heisenberg H₅
 
@@ -45,7 +45,7 @@ The assumed plaintiff cost share is the base-cost-weighted mix of [.24,.38,.5,.5
 
 ## Quality-preserving burden comparison
 
-The blueprint defines Γε={γ:𝒜(γ)≥𝒜(γᴿ)−ε}, B*ε=infΓε L_B(γ), and B_avoidable=L_B(γᴿ)−B*ε. This requires an independent adjudicative quality assessment and an observed complete history.
+The quality constraint is Γε={γ:𝒜(γ)≥𝒜(γᴿ)−ε}, B*ε=infΓε L_B(γ), and B_avoidable=L_B(γᴿ)−B*ε. This requires an independent adjudicative quality assessment and an observed complete history.
 
 The implementation uses a narrower surrogate. It enumerates the empty path and all ordered selections of one to three distinct actions, giving 41 candidates. A path is nondominated if no candidate is no more expensive and at least as informative with one strict inequality. `comparable` selects the least-cost candidate with I≥I_baseline−ε, where the baseline is the future scenario deposition→discovery→motion. This finite information-proxy constraint does not preserve demonstrated adjudicative quality; it does not compute the infimum over every admissible history or the observed case’s avoidable waste. Editors permit up to five actions including repeats, so not every editable path is in the candidate search.
 
@@ -53,10 +53,11 @@ The implementation uses a narrower surrogate. It enumerates the empty path and a
 
 The three showcases are selected retrospective episodes, not complete dockets or training cases. At a chosen cutoff, only the selected event prefix supplies the starting state. Information increments are authored and their sum is capped at .99; this is neither ΔV nor 𝒜. Unreported costs/hours remain null. A reported expense is a partial subtotal, not complete observed L_B. Opinion publication dates can postdate the underlying events, so prefix invariance is not evidence of a contemporaneously available dataset.
 
-## Blueprint components not yet implemented
+## Empirical components not yet implemented
 
 No AI lawyers, judge, jury ensemble, regime comparison, independent generation/evaluation, empirical bracket fitting, held-out quality assessment or causal counterfactual validation is implemented. Removing a fact, document or claim requires issue/evidence dependencies and an independent adequacy assessment; removing a procedural action only changes the specified proxy scenario.
 
 Testing the research hypothesis requires independently annotated ΔV, ΔB and 𝒜, a justified action representation and learned bracket form, held-out comparisons of additive/Heisenberg/generic/higher-step structures, and counterfactuals without hindsight. Multiple required central directions, persistent triple-bracket terms or burden-dependent later actions can challenge the one-center approximation. Algebra tests verify the chosen code definitions, not an empirical law of litigation.
 
 Mathematical reference: [Robert Young’s NYU notes on nilpotent groups](https://math.nyu.edu/~ryoung/courses/subriem/subRnotes.html).
+
