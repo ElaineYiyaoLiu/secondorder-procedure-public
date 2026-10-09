@@ -1,7 +1,6 @@
 import type {ReactNode} from 'react';
 import katex from 'katex';
 import {modelIds,project} from '../lib/model';
-import {productVersion} from '../lib/version';
 import {methodSections,type Block} from './method-content';
 
 // Only author-controlled formulas are rendered; no uploaded content or macros enter KaTeX.
@@ -20,7 +19,7 @@ export default function Method({zh}:{zh:boolean}) {
  return <article className="method-content mathematical-review" aria-label={t('Mathematical framework','数学框架')}>
   <section className="panel method-section review-intro">
    <div className="review-topline"><div><h2>{t('Mathematical framework','数学框架')}</h2><p>{t('Definitions, proofs, model choices and reproducible calculations.','定义、证明、模型选择与可复现计算。')}</p></div><button className="secondary method-screen" onClick={()=>window.print()}>{t('Print / save PDF','打印 / 保存 PDF')}</button></div>
-   <div className="method-callout">SecondOrder Procedure · {productVersion}<br/>{t('Workspace model','工作台模型')}: <strong>{modelIds.heisenberg}</strong></div>
+   <div className="method-callout">SecondOrder Procedure<br/>{t('Workspace model','工作台模型')}: <strong>{modelIds.heisenberg}</strong></div>
    <p>{t('Start with the group construction in section 03. Section 04 explains why the model has five dimensions, sections 05–07 verify its representations and path formulas, and sections 09–11 reproduce the calculations. The final sections develop the validation protocol and questions for review.','可从第 03 节的群构造开始。第 04 节解释为何是五维，第 05–07 节核查表示与路径公式，第 09–11 节复现计算。最后几节展开验证流程和审阅问题。')}</p>
    <nav className="method-toc method-screen" aria-label={t('Method contents','方法目录')}>{methodSections.map(s=><button key={s.id} onClick={()=>document.getElementById(`method-${s.id}`)?.scrollIntoView({behavior:'smooth',block:'start'})}><span>{s.id}</span>{cell(s.title)}</button>)}</nav>
   </section>

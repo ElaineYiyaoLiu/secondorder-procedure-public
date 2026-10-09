@@ -24,7 +24,7 @@ export function stateAt(data: CaseData, index: number) {
 }
 export type Projection = { path: Action[]; gain: number; quality: number; cost: number; days: number; plaintiff: number; defense: number; low: number; high: number };
 export type ModelKind = 'heisenberg' | 'free-step2';
-export const modelIds:Record<ModelKind,string> = {heisenberg:'heisenberg-h5-nilpotent-v0.10','free-step2':'free-step2-nilpotent-v0.10'};
+export const modelIds:Record<ModelKind,string> = {heisenberg:'heisenberg-h5-v0.1','free-step2':'free-step2-v0.1'};
 export const MODEL_ID = modelIds.heisenberg;
 export const DEFAULT_MODEL:ModelKind = 'heisenberg';
 export const actionIds: Action[] = ['discovery','deposition','motion','expert'];
