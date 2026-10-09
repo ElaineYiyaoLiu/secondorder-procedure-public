@@ -87,7 +87,7 @@ test('free-step2 quotient is a homomorphism and matches independent H5 folding',
  hEqual(heisenbergSignature(['deposition','discovery']),{horizontal:[1,1,0,0],central:-.5});
  hEqual(heisenbergSignature(['motion','expert']),{horizontal:[0,0,1,1],central:.5});
 });
-test('engine selector changes actual evaluation, not just labels',()=>{
+test('the alternative algebra changes the specified evaluation',()=>{
  const h=project(.38,['motion','expert'],'heisenberg'),g=project(.38,['motion','expert'],'free-step2');
  assert.equal(h.cost,75750);assert.equal(g.cost,80000);assert.equal(h.days,76);assert.equal(g.days,79);assert.ok(h.quality>g.quality);
  const forward=project(.38,['motion','expert']),reverse=project(.38,['expert','motion']);
@@ -108,3 +108,4 @@ test('both engines preserve prefixes, frontier feasibility and bounded allocatio
   assert.ok(r.comparison.best.quality>=r.comparison.baseline.quality-.02-1e-9);
  }
 });
+

@@ -1,4 +1,4 @@
-# Procedure v0.5: nilpotent Heisenberg application
+# Procedure v0.6: nilpotent Heisenberg application
 
 This specifies the ordered action model, its Heisenberg group law and its scenario evaluation. Method presents the mathematical framework, full calculation workflow and empirical testing protocol in English and Chinese.
 
@@ -26,7 +26,7 @@ Discovery→deposition gives horizontal [1,1,0,0], z=+0.5; its reverse gives ide
 
 The earlier representation is retained as `free-step2`. It has four counts and six central areas in lexicographic order: discovery/deposition, discovery/motion, discovery/expert, deposition/motion, deposition/expert, motion/expert. BCH composition adds half the antisymmetric product. `quotientToHeisenberg` sends this state to H₅ by keeping the four counts and setting z=a₀+a₅. Independent H₅ folding agrees with this quotient, which respects composition.
 
-The generic evaluation retains its sparse earlier coefficients: gain [.16,0,0,0,0,0], cost [−8500,0,0,0,0,0], days [−6,0,0,0,0,0]. H₅ evaluates the shared z with gain .16, cost −8500 and days −6. Thus the model selector changes actual projections, enumerated candidates and frontier calculations. This compares specified assumptions; it is not a fitted comparison showing that H₅ is superior.
+The generic evaluation retains its sparse earlier coefficients: gain [.16,0,0,0,0,0], cost [−8500,0,0,0,0,0], days [−6,0,0,0,0,0]. H₅ evaluates the shared z with gain .16, cost −8500 and days −6. The workspace uses H₅. The free model remains available in the library for mathematical comparison and audit; there is no model selector in the interface. Neither representation has been fitted to establish empirical superiority.
 
 ## Evaluation rules
 
@@ -61,3 +61,13 @@ Testing the research hypothesis requires independently annotated ΔV, ΔB and �
 
 Mathematical reference: [Robert Young’s NYU notes on nilpotent groups](https://math.nyu.edu/~ryoung/courses/subriem/subRnotes.html).
 
+
+## Mathematical review
+
+Method has fifteen numbered sections and 38 LaTeX equations. It includes the general step-2 construction, associativity and Jacobi checks, the rank-4 condition for H5, a faithful 4x4 matrix representation, and the five-dimensional kernel of the quotient from the free algebra. Ordinary dimension is five; homogeneous dimension is six.
+
+The action encoding uses nonnegative unit increments, so no nonempty selectable word has zero horizontal displacement. The center can cancel independent areas; it is not a measure of all interaction. Predictive sufficiency and the legal meaning of these coordinates remain empirical questions.
+
+The outcome rules are independent assumptions. Saturation in intensity does not guarantee monotonicity in actions: four expert actions followed by a motion reduce intensity by 0.07 and lower the information score. For longer repeated words the cost rules also need not have nonnegative marginal increments. The current projected cost therefore cannot automatically be identified with a sum of nonnegative observed burdens.
+
+Method provides the precise quality constraint, finite-search existence argument, scale covariance, rank/identifiability conditions, smooth-flow conditions for a bracket approximation, experimental protocol and questions for mathematical review. It has a print layout for taking the specification to a reviewer.

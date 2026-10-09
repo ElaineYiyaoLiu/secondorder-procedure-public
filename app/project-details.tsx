@@ -11,7 +11,7 @@ export default function ProjectDetails({ zh }: { zh: boolean }) {
       <summary><span>{zh ? '项目详情' : 'Project details'}</span><span className="details-chevron" aria-hidden="true">⌄</span></summary>
       <section className="project-details-panel" aria-label={zh ? 'Procedure 项目详情' : 'Procedure project details'}>
         <h2>Procedure</h2>
-        {zh ? <p>Procedure 将 <strong>Heisenberg 模型</strong>应用到程序路径比较：默认的 H₅ 是二阶 <strong>nilpotent（幂零）</strong>群，四个动作方向共享一个中心项，用来保留动作顺序。工作台据此计算信息、费用和时间情景，并在有限候选中比较保留信息的较低负担路径。动作映射和参数仍为假设，Method 详细说明其应用、限制及需要完成的实证检验。</p> : <p>Procedure uses the <strong>Heisenberg model</strong> to procedural path comparison. The default H₅ is a step-2 <strong>nilpotent</strong> group: four action directions share one central term that retains order. The workspace evaluates information, cost and time scenarios, then compares lower-burden paths within a finite candidate set. Action mappings and parameters remain assumptions; Method explains the application, limits and empirical tests still needed.</p>}
+        {zh ? <p>Procedure 比较开示、证言录取和动议的不同顺序，计算对应的信息、费用与时长。工作台使用五维 <strong>Heisenberg 群 H₅</strong>：四个动作方向共享一个中心方向。Method 给出定义、推导、计算实例，以及这些假设需要怎样检验。</p> : <p>Procedure compares the order of discovery, depositions and motions, then calculates information, cost and duration. It uses the five-dimensional <strong>Heisenberg group H₅</strong>, with four action directions and one shared central direction. Method gives the definitions, derivations, worked calculations and tests these assumptions need.</p>}
       </section>
     </details>
   );
