@@ -7,19 +7,19 @@ const p=(en:string,zh:string,role?:TextBlock['role']):TextBlock=>({type:'text',e
 const m=(id:string,tex:string):MathBlock=>({type:'math',id,tex});
 const table=(headers:TableBlock['headers'],rows:TableBlock['rows']):TableBlock=>({type:'table',headers,rows});
 export const methodSections:MethodSection[] = [
-{id:'01',title:['Scope, claims and notation','范围、命题与记号'],blocks:[
+{id:'01',title:['Overview and notation','概述与记号'],blocks:[
 p('This page develops the algebra behind Procedure, proves its main properties and traces the calculations to the code. It also sets out how procedural histories enter the model and how its assumptions can be tested.','本页展开 Procedure 的代数结构，证明主要性质，并将计算公式对应到代码。同时说明程序历史如何进入模型，以及如何检验模型假设。'),
 p('Model scope: the algebra is defined and tested; action pairings and outcome coefficients are specified scenario assumptions. Empirical calibration and quality-preserving counterfactual analysis remain to be carried out.','模型范围：代数结构已定义并测试；动作配对与输出系数是给定的情景假设。实证校准及保持裁判质量的反事实分析尚待完成。'),
 p('All vector spaces and groups here are real. H₅ means a Heisenberg group of ordinary manifold dimension five. Some references write this same group as ℍ² or H₂, indexing by the number of canonical pairs. We reserve n for that number, N for the number of procedural actions, Z for a basis vector and z for its scalar coordinate.','本页的向量空间与群均取实数域。H₅ 表示通常流形维数为五的 Heisenberg 群。有些文献按标准配对数编号，将同一群写作 ℍ² 或 H₂。这里 n 表示配对数，N 表示程序动作数，Z 表示基向量，z 表示其标量坐标。')
 ]},
-{id:'02',title:['Histories, states and the encoding map','历史、状态与编码映射'],blocks:[
+{id:'02',title:['Encoding procedural histories','程序历史的编码'],blocks:[
 m('2.1',String.raw`\gamma=(Q_1,\ldots,Q_N),\quad H_t=(Q_1,\ldots,Q_t),\quad S_t=Q_t(S_{t-1})`),
 p('Qₜ is a role-specific procedural transition on an admissible litigation state, including available evidence, unresolved issues and any history needed for future decisions. Procedure compares chronological sequences. Standard function composition applies right to left, so “Qᵢ then Qⱼ” is Qⱼ∘Qᵢ. Group products below instead list increments in chronological order. The two conventions must not be conflated.','Qₜ 是作用于合法诉讼状态的角色相关程序转移。状态包含可用证据、待决争议及未来决策所需的历史。Procedure 比较按时间排列的动作。通常的函数复合从右向左作用，因此“先 Qᵢ 后 Qⱼ”是 Qⱼ∘Qᵢ；下文群乘积则按时间顺序排列增量。两种约定须明确区分。'),
 m('2.2',String.raw`a_t=\phi(Q_t,H_{t-1})\in V,\qquad g_0=(0,0),\quad g_t=g_{t-1}\cdot(a_t,0)`),
 p('The current φ maps discovery, deposition, motion and expert discovery to the four standard basis vectors of ℝ⁴, independent of state, intensity or role. A richer φ could use normalized doses or substantive-state changes, but that would require a defined measurement model. The implementation assumes zero direct central increment per action.','当前 φ 将开示、证言录取、动议和专家开示映射为 ℝ⁴ 的四个标准基向量，不随状态、强度或角色变化。更丰富的 φ 可编码归一化剂量或实质状态变化，但需要明确测量模型。当前实现假设每个动作的直接中心增量为零。','assumption'),
 p('The encoding represents chronological action words. To connect it to actual state transitions, specify a compatible transition map; to use it for prediction, test whether histories with the same features and initial state have comparable conditional outcomes. These are separate requirements.','编码表示按时间排列的动作词。若要对应实际状态转移，需定义与之相容的转移映射；若用于预测，则需检验特征和初始状态相同的历史是否具有相近的条件结果。这是两项不同要求。')
 ]},
-{id:'03',title:['General step-2 construction and its proof','一般二阶构造及证明'],blocks:[
+{id:'03',title:['Step-2 nilpotent groups','二阶幂零群'],blocks:[
 p('Let V and W be finite-dimensional vector spaces and let β:Λ²V→W be linear, equivalently an alternating bilinear map. Assume im β=W when W is intended to be exactly the commutator layer. On V⊕W define the following bracket and multiplication.','令 V、W 为有限维向量空间，β:Λ²V→W 为线性映射，等价于反对称双线性映射。若 W 要恰好等于交换子层，则另假设 im β=W。在 V⊕W 上定义如下括号与乘法。'),
 m('3.1',String.raw`[(u,z),(v,w)]=(0,\beta(u,v)),\qquad [V,W]=[W,W]=0`),
 m('3.2',String.raw`(u,z)\cdot(v,w)=\left(u+v,z+w+\tfrac12\beta(u,v)\right)`),
@@ -84,7 +84,7 @@ p('The dilation gives homogeneous dimension six and scales horizontal and centra
 m('8.4',String.raw`b_t=(\text{USD},\text{hours},\text{delay},\text{disclosure},\ldots)_t,\qquad L_B(\gamma)=\sum_t\langle w,b_t\rangle`),
 p('A scalar burden requires nonnegative weights and declared unit normalization. If costs and hours are missing, a known subtotal is not complete L_B. Party-specific L_Bᴾ and L_Bᴰ support an asymmetry analysis; psychological harm requires a separately validated measurement. The scenario objective below uses USD alone and reports days separately.','标量负担需指定非负权重与单位归一化。费用或工时缺失时，已知小计不能代表完整 L_B。分别定义 L_Bᴾ、L_Bᴰ 可分析不对称负担，心理伤害则需要另行验证的测量。下文情景目标仅使用美元费用，天数单独报告。')
 ]},
-{id:'09',title:['Record inputs and exact scenario functions','记录输入与精确情景函数'],blocks:[
+{id:'09',title:['Model inputs and outputs','模型输入与输出'],blocks:[
 p('stateAt uses only the chosen prefix of the selected case, sums its authored information increments and caps I₀ at 0.99. Selected public episodes are retrospective reconstructions from opinions, not complete litigation histories. Event dates and opinion publication dates are separate; a prefix restriction alone cannot establish historical availability to each party. Unreported costs and hours stay unknown.','stateAt 只使用所选案件的截止点前缀，汇总人工设定的信息增量，并将 I₀ 上限设为 0.99。公开案件选段是依据文书回溯重建的历史，并非完整诉讼记录。事件日期与文书发布日期分别记录，仅限制前缀不能证明信息当时已向各方开放。未披露费用与工时保留为未知。'),
 table([['Action / basis','动作 / 基向量'],['Cost cₖ · USD','费用 cₖ · 美元'],['Days dₖ','天数 dₖ'],['Gain input gₖ','增益输入 gₖ'],['Plaintiff share sₖ','原告份额 sₖ']],[
 [['Discovery / X₁','开示 / X₁'],['38,000','38,000'],['42','42'],['0.18','0.18'],['0.24','0.24']],
@@ -97,7 +97,7 @@ m('9.3',String.raw`s_P=\frac{\sum_kn_kc_ks_k}{\sum_kn_kc_k},\quad B_P=\operatorn
 m('9.4',String.raw`B_{\rm low}=\operatorname{round}(0.65B),\qquad B_{\rm high}=\operatorname{round}(1.60B)`),
 p('For an empty path, set B=T=B_P=B_D=0 and I=I₀. For the free alternative replace 0.16z,−8500z,−6z with 0.16A₁₂,−8500A₁₂,−6A₁₂. Each coefficient, the divisor 0.36, pair mapping and range multiplier is an authored parameter. The range has no stated probability coverage. Neither BCH nor Heisenberg geometry determines these outcome functions.','空路径规定 B=T=B_P=B_D=0、I=I₀。自由替代模型将 0.16z、−8500z、−6z 分别替换为 0.16A₁₂、−8500A₁₂、−6A₁₂。全部系数、除数 0.36、配对及区间倍数均为预设参数，区间未给定概率覆盖率。这些输出函数不由 BCH 或 Heisenberg 几何推出。','assumption')
 ]},
-{id:'10',title:['Worked calculation and marginal effects','计算实例与边际效应'],blocks:[
+{id:'10',title:['A worked example','计算示例'],blocks:[
 m('10.1',String.raw`\begin{aligned}I_0&=0.38,\quad \gamma_A=(X_1,Y_1),\quad \gamma_B=(Y_1,X_1),\\u_A&=u_B=(1,1,0,0),\quad z_A=\tfrac12,\quad z_B=-\tfrac12,\\r_A&=\tfrac{0.29}{0.36}+0.08=0.885555\ldots,\\r_B&=\tfrac{0.29}{0.36}-0.08=0.725555\ldots.\end{aligned}`),
 table([['Output','输出'],['Path A','路径 A'],['Path B','路径 B']],[
 [['Final I','最终 I'],['0.7442593302','0.7442593302'],['0.6998855438','0.6998855438']],
@@ -111,7 +111,7 @@ p('Let r̃ denote intensity before clipping at zero. The derivative ∂I/∂r=(1
 m('10.3',String.raw`\Delta\widetilde B_k=c_k-4250\,\omega(u,e_k),\qquad \Delta\widetilde T_k=d_k-3\,\omega(u,e_k)`),
 p('Tildes denote unrounded, unclipped values. For sufficiently long repeated paths, the area term can make marginal cost negative. Equating projected B with the nonnegative burden sum in (8.4) therefore requires path constraints or a revised evaluator. Nonlinear differences in I, B or T describe the output functions; higher Lie brackets belong to the underlying algebra.','波浪号表示未经取整或截断的值。重复路径足够长时，面积项可使边际费用为负。若要将推演 B 等同于 (8.4) 的非负负担累加，需限制路径或修改评分函数。I、B、T 的非线性差分描述输出函数，高阶 Lie 括号则属于底层代数。')
 ]},
-{id:'11',title:['Quality-constrained burden and finite optimization','质量约束负担与有限优化'],blocks:[
+{id:'11',title:['Comparing burden under quality constraints','质量约束下的负担比较'],blocks:[
 m('11.1',String.raw`\Gamma_\varepsilon=\{\gamma\in\Gamma_{\rm adm}:\mathcal A(\gamma)\ge\mathcal A(\gamma^R)-\varepsilon\},\quad B^*_\varepsilon=\inf_{\gamma\in\Gamma_\varepsilon}L_B(\gamma)`),
 m('11.2',String.raw`B_{\rm avoidable}=L_B(\gamma^R)-B^*_\varepsilon`),
 p('Γ_adm must specify legal admissibility, initial information, available resources and termination criteria. Fix the quality rubric and ε before comparing paths. Assume γᴿ∈Γ_adm, ε≥0, finite observed burden and L_B≥0. Then γᴿ∈Γε, so 0≤B_avoidable≤L_B(γᴿ). The infimum need not be attained without compactness or another existence condition.','Γ_adm 须指定程序合法性、初始信息、可用资源及终止条件。比较前须固定质量量表与 ε。假设 γᴿ∈Γ_adm、ε≥0、观测负担有限且 L_B≥0，则 γᴿ∈Γε，因此 0≤B_avoidable≤L_B(γᴿ)。若缺少紧性或其他存在性条件，下确界未必能达到。','proposition'),
@@ -129,21 +129,21 @@ p('For a 4×4 alternating matrix, nonzero Pfaffian is the rank-4 criterion. A fi
 p('Under an additional linear-observation assumption for isolated bracket effects, arrange independently measured pairwise effects as a K×6 matrix M. A shared scalar center implies rank M≤1. This is a necessary condition for that observation model, not a general theorem for nonlinear outputs. Noise, confounding, scaling and state dependence must be modeled. The fixed zero and equal-pair restrictions of J are stronger than the rank-one hypothesis.','若另假设孤立括号效应被线性观测，可将独立测得的成对效应排列为 K×6 矩阵 M。共同标量中心蕴含 rank M≤1。这是该观测模型的必要条件，不是对非线性输出的一般定理。噪声、混杂、尺度与状态依赖都须建模。J 中固定为零及两配对相等的限制，比秩一假设更强。'),
 p('I(γ), B(γ) and T(γ) currently depend only on I₀, action counts and the retained center. Different histories with equal features are forced to share predictions. Validate that compression on held-out histories and compare it with full pair areas and explicit state variables before treating these features as sufficient.','当前 I(γ)、B(γ)、T(γ) 只依赖 I₀、动作计数与保留的中心项。不同历史若特征相同，会被强制赋予相同预测。须在留出历史上验证压缩，并与完整成对面积及显式状态变量比较，才能将这些特征视为充分。')
 ]},
-{id:'13',title:['From observed order effects to a Lie bracket','从观测顺序效应到 Lie 括号'],blocks:[
+{id:'13',title:['Order effects and Lie brackets','顺序效应与 Lie 括号'],blocks:[
 p('A finite order effect does not by itself identify a Lie algebra. A local bracket interpretation requires a smooth state manifold, sufficiently regular vector fields Vᵢ representing small-dose action flows, a chart or other common comparison space, and comparable initial states. For C³ fields and sufficiently small a,b, use the following convention.','有限顺序效应本身不能识别 Lie 代数。局部括号解释需要光滑状态流形、表示小剂量动作流的充分正则向量场 Vᵢ、坐标图或共同比较空间，以及可比的初始状态。对 C³ 向量场及充分小的 a、b，采用如下约定。'),
 m('13.1',String.raw`[V_i,V_j]=DV_j\,V_i-DV_i\,V_j`),
 m('13.2',String.raw`\begin{aligned}\Phi_j^b(\Phi_i^a(s))-\Phi_i^a(\Phi_j^b(s))&=ab[V_i,V_j](s)\\&\quad+O(|a|^2|b|+|a||b|^2).\end{aligned}`),
 p('The subtraction is taken in the chosen local chart; the leading bracket is coordinate-invariant as a tangent vector. Arbitrary discrete discovery or deposition operations need not admit such flows or small-dose limits. Signed inverse flows used in a mathematical commutator may be inadmissible in law. A measured finite contrast should then be called an order effect, with a separately tested approximation to a bracket.','相减在选定局部坐标图中进行，首阶括号作为切向量具有坐标不变性。任意离散开示或证言录取操作未必允许这种流或小剂量极限。数学交换子所用的有符号逆流在法律上也可能不允许。此时应将测得的有限差异称为顺序效应，并另行检验其括号近似。'),
 p('In a general step-2 candidate, fit β:Λ²V→W and test centrality, stability across states and held-out prediction. Persistent effects corresponding to [Vᵢ,Zα]≠0 contradict an exactly central second layer in the same state model. They can motivate a higher-step algebra, a nonnilpotent model or explicit state dependence. Burden-dependent behavior alone does not identify which alternative is correct.','对一般二阶候选，拟合 β:Λ²V→W，检验中心性、跨状态稳定性及留出预测。在同一状态模型中，持续存在对应 [Vᵢ,Zα]≠0 的效应，会否定第二层严格中心性；可考虑高阶代数、非幂零模型或显式状态依赖。仅观察到负担影响行为，尚不能确定哪种替代结构正确。')
 ]},
-{id:'14',title:['Empirical protocol and falsifiable claims','实证流程与可证伪主张'],blocks:[
+{id:'14',title:['Testing the model','模型检验'],blocks:[
 p('First define the quality rubric, substantive-state measurement and burden units. Quality may include issue coverage, evidentiary adequacy, outcome fidelity and procedural guarantees; preserving a verdict alone does not establish preserved adjudicative quality. If these are separate dimensions, use componentwise tolerances rather than an unexplained scalar. ΔV, information gain ΔI and jury-belief change ΔJ must remain separately scored.','先定义质量量表、实质状态测量及负担单位。质量可包含争议覆盖、证据充分性、结果一致性与程序保障，仅保留相同裁判结果不能证明裁判质量得以保留。若这些是独立维度，应使用逐项容差，而非未经解释的标量。ΔV、信息增益 ΔI 与陪审团信念变化 ΔJ 须分别评分。'),
 p('Reconstruct completed observed histories from pleadings, discovery, transcripts, production, motions, orders, admitted evidence and outcomes. Record source dates, role-specific availability and unknown values. Independent evaluators score increments and final quality, with agreement and uncertainty reported. Split by case, not by nearby events from the same case, to limit leakage.','用诉状、开示、笔录、材料提交、动议、裁定、获准证据与结果重建已完成历史。记录来源日期、各角色可获时间与未知值。由独立评估者评分增量及最终质量，并报告一致性与不确定性。按案件划分训练与留出集，避免同一案件相邻事件造成泄漏。'),
 p('For counterfactual simulation reset the initial information state. Separate plaintiff and defense agents, procedural judge, admitted-evidence jury ensemble and evaluators. At each step expose only information available to that role at that time. Compare unrestricted adversarial optimization with a prespecified cost for low-value procedure; repeat across seeds and model families. Agent generation and quality scoring must remain independent.','反事实模拟从重置的初始信息状态开始。分别设置原告、被告智能体、程序法官、只接收获准证据的陪审团组及评估者。每步只提供该角色当时可获的信息。比较不受低价值程序成本约束的对抗优化与预设成本条件，并跨随机种子与模型系列重复。路径生成与质量评分须独立。'),
 p('Compare additive, H₅, full step-2 and appropriate higher-order/state-dependent candidates using the same input information, parameter-fitting rules and held-out quality/burden outcomes. Measure whether discarded interactions improve prediction and whether a one-center rank-4 representation is stable. A scenario gap is not causally identified by running two agents; causal interpretation requires assumptions about interventions, comparability, omitted state and simulation validity.','用相同输入信息、参数拟合规则与留出质量／负担结果，比较加法、H₅、完整二阶及合适的高阶或状态依赖候选。检验被舍弃交互是否改善预测，以及单中心秩四表示是否稳定。仅运行两组智能体不能因果识别情景差；因果解释需要干预、可比性、遗漏状态与模拟有效性的假设。'),
 p('The representation is challenged by unstable pairings, multiple necessary interaction dimensions, failed centrality, substantial higher-order residuals, or different outcomes for histories with identical encoded features. Evaluate descriptive fit, causal interpretation and quality preservation against their respective criteria.','配对不稳定、需要多个交互维度、中心性失败、高阶残差显著，或编码相同的历史结果不同，均可挑战该表示。描述性拟合、因果解释与质量保持应分别按各自标准评估。')
 ]},
-{id:'15',title:['Code audit and questions for mathematical review','代码核查与数学审阅问题'],blocks:[
+{id:'15',title:['Code and review questions','代码与审阅问题'],blocks:[
 table([['Function','函数'],['Equation / role','公式 / 作用']],[
 [['symplectic','symplectic'],['(4.2): fixed J and coordinate order','(4.2)：固定 J 与坐标顺序']],
 [['composeHeisenberg','composeHeisenberg'],['(3.2): exact H₅ multiplication','(3.2)：精确 H₅ 乘法']],
